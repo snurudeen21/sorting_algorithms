@@ -9,9 +9,9 @@
 
 int findmax(int *array, size_t size)
 {
-	int i, max = 0;
+	int i, max;
 
-	for (i = 0; i < (int)size; i++)
+	for (max = array[0], i = 1; i < size; i++)
 	{
 		if (max < array[i])
 			max = array[i];
@@ -27,19 +27,23 @@ int findmax(int *array, size_t size)
 
 void radix_sort(int *array, size_t size)
 {
-	int m, pos, *out, *ca;
+	int max, sig, *buff;
 
 	if (array == NULL || size < 2)
 		return;
-	m = findmax(array, size);
-	out = malloc(sizeof(int) * (int)size);
-	ca = malloc(sizeof(int) * (10));
-	if (ca == NULL || out == NULL)
+
+	buff = malloc(sizeof(int) * size);
+	if (buff == NULL)
 		return;
-	for (pos = 1; m / pos > 0; pos *= 10)
-		counting_sort_r(array, size, pos, out, ca), print_array(array, size);
-	free(out);
-	free(ca);
+
+	max = get_max(array, size);
+	for (sig = 1; max / sig > 0; sig *= 10)
+	{
+		radix_counting_sort(array, size, sig, buff);
+		print_array(array, size);
+	}
+
+	free(buff);
 }
 
 /**
